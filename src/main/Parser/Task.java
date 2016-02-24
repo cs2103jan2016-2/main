@@ -1,5 +1,7 @@
 package parser;
 
+import java.util.*;
+
 	/*
 	 *@author Pay Hao Jie
 	 *@Description: This class sets and returns the attributes of a task. 
@@ -7,8 +9,8 @@ package parser;
 public class Task {
 	
 	private int taskID;
-	private String taskStartDate;
-	private String taskEndDate;
+	private Date taskStartDate;
+	private Date taskEndDate;
 	private String taskTag;
 	private String taskDescription;
 	private boolean taskImportance;
@@ -23,19 +25,19 @@ public class Task {
 		this.taskID = taskID;
 	}
 	
-	protected String getTaskStartDate() {
+	protected Date getTaskStartDate() {
 		return this.taskStartDate;
 	}
 	
-	protected void setTaskStartDate(String taskStartDate) {
+	protected void setTaskStartDate(Date taskStartDate) {
 		this.taskStartDate = taskStartDate;
 	}
 	
-	protected String getTaskEndDate() {
+	protected Date getTaskEndDate() {
 		return this.taskEndDate;
 	}
 	
-	protected void setTaskEndDate(String taskEndDate) {
+	protected void setTaskEndDate(Date taskEndDate) {
 		this.taskEndDate = taskEndDate;
 	}
 	
@@ -80,4 +82,3 @@ public class Task {
 	}
 	
 }
-
