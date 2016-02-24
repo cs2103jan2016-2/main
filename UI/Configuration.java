@@ -14,209 +14,179 @@ import javafx.stage.Stage;
 
 public class Configuration extends Application 
 {
-	private static final String CONFIG_FIRSTLINE_VIRGIN_TRUE = "VIRGIN = TRUE";
-	private static final String CONFIG_FIRSTLINE_VIRGIN_FALSE = "VIRGIN = FALSE";
-	private static final String CONFIG_SECONDLINE_DIRECTORY_UNKNOWN = "DBDIR = EMPTY";
-	private static final String CONFIG_SECONDLINE_DIRECTORY_KNOWN = "DBDIR = %1$s";
+
+	private static final String CONFIG_FIRSTLINE_DIRECTORY_UNKNOWN = "DBDIR = EMPTY";
+	private static final String CONFIG_FIRSTLINE_DIRECTORY_KNOWN = "DBDIR = %1$s";
+	private static final String CONFIG_SECONDLINE_FILENAME_UNKNOWN = "FILENAME = EMPTY";
+	private static final String CONFIG_SECONDLINE_FILENAME_KNOWN = "FILENAME = %1$s";
+	private static final String CONFIG_SEPARATOR = System.getProperty("line.separator");
 	private static final String DIALOG_TITLE = "SAVE DATABASE"; 
 	
-	private static final int PARAM_FOR_DIR = 8;
+	private static final int PARAM_FOR_DIR = 8;	//include space
+	private static final int PARAM_FOR_NAME = 11; //includ space
 	
-	final static public String CONFIG_DEFAULT_FILENAME = "Config.txt";
-	final static public String DB_DEFAULT_FILENAME = "DODODB";
-	final static public File file = new File(CONFIG_DEFAULT_FILENAME);
+	final static public String PARAM_CONFIG_DEFAULT_FILENAME = "Config.txt";
+	final static public String PARAM_DB_DEFAULT_FILENAME = "DODODB";
+	
+	final static public File configFile = new File(PARAM_CONFIG_DEFAULT_FILENAME);
 	final static public FileChooser fileChooser = new FileChooser();
-	public boolean virgin;
+	public static ArrayList<String> listOfConfigs = new ArrayList<String>();
+	public File dbFile=null;
 	public FileOutputStream outputStream;
 	public Stage primaryStage;
-	public ArrayList<String> listOfConfigs = new ArrayList<String>();
 	public String strDBdir = "";
+	public String strDBname = "";
 	@Override
 	public void start(Stage primaryStage) 
 	{
 		this.primaryStage = primaryStage;
 		try 
 		{
-			fileCheckCreate(); //CREATE CONFIG FILE
-			readToList(); //READ TO ARRAYLIST
-			checkVirginity(); //SET VIRGIN TO FALSE
-			checkDir(); // SET DIRECTORY
-			if(finalCheck())
+			if(checkConfigFileExist()==true)
 			{
-				writeToConfig();
+				System.out.println("config file exist, read config file now");
+				listOfConfigs.addAll(readConfigFile());
+				System.out.println("check content of listOfConfigs");
+				System.out.println(listOfConfigs);
+				updateParaFromList();
+				checkConfigsContent();
+
 			}
-			else
+			else if(checkConfigFileExist()==false)
 			{
-				System.exit(0);
+				System.out.println("config file and db file dont exist creating one NOW!");
+				createConfigFile();
+				createDbFile();
+				updateConfig();
+				
 			}
 		} 
 		catch(Exception e) 
 		{
 			System.out.println(e);
 		}
+		System.out.println("proceed to gui");
 	}
-	private void writeToConfig() throws IOException {
-		FileOutputStream out = new FileOutputStream(CONFIG_DEFAULT_FILENAME);
-		if(!listOfConfigs.isEmpty())
+
+	private void checkConfigsContent() throws IOException 
+	{
+		File testFile = new File(strDBdir);
+		if(!testFile.exists() || !strDBname.contains(".txt"))
 		{
-			clearText();
-			out.write((listOfConfigs.get(0) + System.getProperty("line.separator")).getBytes());
-			out.write((String.format(CONFIG_SECONDLINE_DIRECTORY_KNOWN, listOfConfigs.get(1)) + System.getProperty("line.separator")).getBytes());
-		}		
+			System.out.println("dosent exist such file in that directory");
+			createDbFile();
+			updateConfig();
+		}
+		
+		
+	}
+	private void updateConfig() throws IOException 
+	{
+		updateParameters();
+		outputStream = new FileOutputStream(PARAM_CONFIG_DEFAULT_FILENAME);
+		outputStream.write((String.format(CONFIG_FIRSTLINE_DIRECTORY_KNOWN, strDBdir) + CONFIG_SEPARATOR).getBytes());
+		outputStream.write((String.format(CONFIG_SECONDLINE_FILENAME_KNOWN, strDBname) + CONFIG_SEPARATOR).getBytes());
+		System.out.println("successfully update parameters(arraylist, dbdir, dbname) and write to config file");
+	}
+	private void updateParameters() 
+	{
+		strDBdir = dbFile.getPath();
+		strDBname = dbFile.getName();
+		listOfConfigs.add(strDBdir);
+		listOfConfigs.add(strDBname);		
 	}
 	private void clearText() throws IOException {
-		FileWriter fileOut = new FileWriter(CONFIG_DEFAULT_FILENAME);
-		fileOut.write("");
-		fileOut.close();
+		FileWriter fileWrite = new FileWriter(PARAM_CONFIG_DEFAULT_FILENAME);
+		fileWrite.write("");
+		fileWrite.close();
 	}
-	private boolean finalCheck() 
+	private ArrayList<String> readConfigFile() throws IOException 
 	{
-		if(boolVirgin() && boolTxtType() && boolKnownDIR())
+		ArrayList<String> tempListOfConfigs = new ArrayList<String>();
+		FileReader fileReader = new FileReader(configFile);
+		BufferedReader bufferReader = new BufferedReader(fileReader);
+		String text="";
+		while ((text = bufferReader.readLine()) != null) 
 		{
-			return true;
+			tempListOfConfigs.add(text);
 		}
-		else
-		{
-			return false;
-		}
+		bufferReader.close();
+		System.out.println("successfully read from config file");
+		return tempListOfConfigs;	
 	}
-	private boolean boolKnownDIR() {
-		return !listOfConfigs.get(1).equals(CONFIG_SECONDLINE_DIRECTORY_UNKNOWN);
-	}
-	private boolean boolVirgin()
+	private void createDbFile() 
 	{
-		return listOfConfigs.get(0).equals(CONFIG_FIRSTLINE_VIRGIN_FALSE);
-	}
-	private boolean boolTxtType()
-	{
-		return listOfConfigs.get(1).contains(".txt");
-	}
+		openDbDialog();
 	
-	private void checkDir() 
-	{
-		if(listOfConfigs.get(1).equals(CONFIG_SECONDLINE_DIRECTORY_UNKNOWN))
-		{
-			strDBdir = chooseDir();
-		}
-		else 
-		{
-			strDBdir = retrieveDir(listOfConfigs.get(1));
-			
-			System.out.println(strDBdir);
-		}
+		System.out.println("successfully created db file");
 	}
-	private String chooseDir() 
+	private void openDbDialog() 
 	{
 		initFileChooser();
-        File file = fileChooser.showSaveDialog(primaryStage);
-        if(file != null)
+		dbFile = fileChooser.showSaveDialog(primaryStage);
+        if(dbFile != null)
         {
-            SaveFile("", file);
+            SaveFile("", dbFile);
         }
-        else if(!file.getPath().contains(".txt"))
+        else if(!dbFile.getPath().contains(".txt"))
         {
-          	 chooseDir();
+        	openDbDialog();
         }
         else
         {
        	 	System.exit(0);
         }
-     	 listOfConfigs.set(1, file.getPath());
-
-        return file.getPath();	 
 	}
 	private void initFileChooser() 
 	{
 		fileChooser.setTitle(DIALOG_TITLE);
-		fileChooser.setInitialFileName(DB_DEFAULT_FILENAME);
+		fileChooser.setInitialFileName(PARAM_DB_DEFAULT_FILENAME);
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);		
 	}
-	private void SaveFile(String content, File file)
-	{
-	        try 
-	        {
-	            FileWriter fileWriter;
-	            fileWriter = new FileWriter(file);
-	            fileWriter.write(content);
-	            fileWriter.close();
-	        } 
-	        catch (IOException ex)
-	        {
-	            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
-	        }
-	}
-	private String retrieveDir(String strRaw)
-	{
-		return strRaw.substring(PARAM_FOR_DIR, strRaw.length());
-	}
-	private void checkVirginity() 
-	{
-		if(listOfConfigs.get(0).equals(CONFIG_FIRSTLINE_VIRGIN_TRUE))
-		{
-			listOfConfigs.set(0,CONFIG_FIRSTLINE_VIRGIN_FALSE);
-		}
-	}
-	/**
-	 *	if exist, proceed.
-	 *	else, create config file.
-	 * @throws IOException 
-	 */	
-	public void fileCheckCreate() throws IOException 
-	{
-		if(!checkFileExist())
-		{
-			createConfigFile();
-			writeFormattedConfigFile();
-		}
-	}
-	/**
-	 *	write config file in a particular format:
-	 *	VIRGIN: TRUE/FALSE
-	 *	DBDIR: the directory link
-	 * @throws IOException 
-	 */	
-	private void writeFormattedConfigFile() throws IOException 
-	{
-		outputStream.write((CONFIG_FIRSTLINE_VIRGIN_TRUE + System.getProperty("line.separator")).getBytes());
-		outputStream.write((CONFIG_SECONDLINE_DIRECTORY_UNKNOWN + System.getProperty("line.separator")).getBytes());
-	}
-	private void readToList() throws IOException 
-	{
-		FileReader fileReader = new FileReader(file);
-		BufferedReader bufferReader = new BufferedReader(fileReader);
-		String text="";
-		while ((text = bufferReader.readLine()) != null) 
-		{
-			listOfConfigs.add(text);
-		}
-		bufferReader.close();		
-	}
-	private void createConfigFile() 
+	private void SaveFile(String content, File localfile)
 	{
 		try 
+        {
+            FileWriter fileWriter;
+            fileWriter = new FileWriter(localfile);
+            fileWriter.write(content);
+            fileWriter.close();
+        } 
+        catch (IOException ex)
+        {
+            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+	}
+	private void createConfigFile() throws IOException 
+	{
+		outputStream = new FileOutputStream(PARAM_CONFIG_DEFAULT_FILENAME, true);
+		writeFormat();
+		System.out.println("successfully created config file and formatted ");
+	}
+	private void writeFormat() throws IOException 
+	{
+		outputStream.write((CONFIG_FIRSTLINE_DIRECTORY_UNKNOWN + CONFIG_SEPARATOR).getBytes());
+		outputStream.write((CONFIG_SECONDLINE_FILENAME_UNKNOWN + CONFIG_SEPARATOR).getBytes());		
+	}
+	private boolean checkConfigFileExist() 
+	{
+		return configFile.exists();
+	}
+	private void updateParaFromList() 
+	{
+		try
 		{
-			outputStream = new FileOutputStream(CONFIG_DEFAULT_FILENAME, true);
+			strDBdir = listOfConfigs.get(0).substring(PARAM_FOR_DIR);
+			strDBname = listOfConfigs.get(1).substring(PARAM_FOR_NAME);
+			System.out.println(strDBdir + "             " + strDBname);		
 		}
-		catch (FileNotFoundException e) 
+		catch(Exception e) 
 		{
 			System.out.println(e);
 		}
 	}
-	/**
-	 *	check for config file existence.
-	 */	
-	public boolean checkFileExist() 
-	{
-		boolean exist = file.exists();
-		return exist;
-	}
-	public static void main(String[] args) {
-		launch(args);
-	}
-	public String getDBdir()
-	{
-		return strDBdir;
-	}
+
 	
+
 }
