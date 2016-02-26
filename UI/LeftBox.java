@@ -10,39 +10,57 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.VBox;
 
 public class LeftBox {
 
-	VBox leftBox = new VBox();
+	CenterBox cb;
+	public VBox leftBox = new VBox();
+	DatePicker  checkInDatePicker = new DatePicker();
+	Label checkInlabel = new Label("Check-In Date:");
+    DatePickerSkin datePickerSkin = new DatePickerSkin(new DatePicker(LocalDate.now()));
+    ListView<String> list = new ListView<>(); 
+	TitledPane titledPane = new TitledPane();
+	
+	ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList( new PieChart.Data("Completed", 13), new PieChart.Data("Incomplete", 25));	
+	ObservableList<String> arrayImgView = FXCollections.observableArrayList(new String("test"),new String("test1"),new String("test2"));
+    
+	final PieChart chart = new PieChart(pieChartData);
 
-	private void addGraph() {
-		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList( new PieChart.Data("Completed", 13), new PieChart.Data("Incomplete", 25));
-        final PieChart chart = new PieChart(pieChartData);
+	public void blurEffect()
+	{
+		System.out.println("blur at leftbox");
+		leftBox.setEffect(new BoxBlur());
+		titledPane.setEffect(new BoxBlur());
+		chart.setEffect(new BoxBlur());
+		checkInlabel.setEffect(new BoxBlur());
+	}
+    
+	private void addGraph() 
+	{
         chart.setTitle("Completed Task Statistic");
         leftBox.getChildren().add(chart);
 	}
-	private void addTagCategories() {
-		TitledPane titledPane = new TitledPane();
+	private void addTagCategories() 
+	{
 		addTagList(titledPane);
 	}
 	@SuppressWarnings("restriction")
-	private void addCalendar() {
-		DatePicker  checkInDatePicker = new DatePicker();
-        Label checkInlabel = new Label("Check-In Date:");
-        DatePickerSkin datePickerSkin = new DatePickerSkin(new DatePicker(LocalDate.now()));
-        @SuppressWarnings("restriction")
+	private void addCalendar() 
+	{
 		Node popupContent = datePickerSkin.getPopupContent();
         leftBox.getChildren().add(popupContent);
 	}
-	private void addTagList(TitledPane titledPane){
-		ListView<String> list = new ListView<>(); 
-		ObservableList<String> arrayImgView = FXCollections.observableArrayList(new String("test"),new String("test1"),new String("test2"));
+	private void addTagList(TitledPane titledPane)
+	{
 		list.setItems(arrayImgView);
 		titledPane.setContent(list);
 		leftBox.getChildren().add(list);
 	}
-	public VBox leftBox() {
+	public VBox leftBox(CenterBox cb) 
+	{
+		this.cb = cb;
 		addGraph();
 		addTagCategories();
 		addCalendar();
