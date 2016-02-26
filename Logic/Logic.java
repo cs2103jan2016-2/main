@@ -5,58 +5,56 @@ import java.util.*;
  * description: 
  */
 
-enum COMMAND {
-	ADD, EDIT, DELETE, TAG, FLAG, SEARCH, UNDO, REDO, 
-}
-
 public class Logic {
-	Parser parser;
+	Storage storage;
 	ArrayList<Task> ongoingTasks;
 	ArrayList<Task> completedTasks;
 	ArrayList<Task> overdueTasks;
 	ArrayList<Task> floatingTasks;
 	ArrayList<Task> results;
 	
-	public Logic(String command) {
-		parser = new Parser(command);
+	// UI: you will call this when user starts the programme
+	public Logic(String directory) {
+		Storage storage = new Storage(directory);
+		ongoingTasks = storage.read(TYPE.ONGOING);
+		completedTasks = storage.read(TYPE.COMPLETED);
+		overdueTasks = storage.read(TYPE.OVERDUE);
+		floatingTasks = storage.read(TYPE.FLOATING);
 	}
 	
-	public ArrayList<Task> retrieveTasks() {
-		Storage storage = new Storage();
-		storage.getTasks();
+	// UI: you will call this to run logic
+	public String run(String input) {
+		return processCommand(input);
 	}
 	
-	public void run(String command) {
+	public String processCommand(String input) {
+		Parser parser = new Parser(input);
 		COMMAND command = parser.getCommandType();
 		
 		switch (command) {
 		case ADD:
-			add();
-			break;
-		case EDIT:
-			edit();
-			break;
-		case DELETE:
-			delete();
-			break;
-			
+			return add();
 	}
 	
-	public void add() {
+	public String add() {
 		String name = parser.getName();
-		String tag = parser.getTag();
+		String tag = parser.getTag(); // may be null
 		boolean isTask = parser.getIsTask();
 		boolean flag = parser.getFlag();
-		Date startTime = parser.getStartTime();
+		Date startTime = parser.getStartTime(); // may be null
 		Date endTime = parser.getEndTime();
 		
 		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
 		ongoingTasks.add(task);
+		return "Added successfully";
+	}	
+	
+	// UI: you will call this when user is quiting the programme
+	public String save() {
+		storage.save(TYPE.ONGOING, ongoingTasks);
+		storage.save(TYPE.COMPLETED, completedTasks);
+		storage.save(TYPE.FLOATING, floatingTasks);
+		storage.save(TYPE.OVERDUE, overdueTasks);
+		return "Saved successfully";
 	}
-	
-	public void edit() {
-		
-	}
-	
-	
 }
