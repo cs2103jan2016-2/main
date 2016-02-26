@@ -6,16 +6,16 @@ import java.util.*;
  */
 
 public class Logic {
-	Storage storage;
-	ArrayList<Task> ongoingTasks;
-	ArrayList<Task> completedTasks;
-	ArrayList<Task> overdueTasks;
-	ArrayList<Task> floatingTasks;
-	ArrayList<Task> results;
+	private Storage storage;
+	private ArrayList<Task> ongoingTasks;
+	private ArrayList<Task> completedTasks;
+	private ArrayList<Task> overdueTasks;
+	private ArrayList<Task> floatingTasks;
+	private ArrayList<Task> results;
 	
 	// UI: you will call this when user starts the programme
 	public Logic(String directory) {
-		Storage storage = new Storage(directory);
+		storage = new Storage(directory);
 		ongoingTasks = storage.read(TYPE.ONGOING);
 		completedTasks = storage.read(TYPE.COMPLETED);
 		overdueTasks = storage.read(TYPE.OVERDUE);
@@ -29,25 +29,23 @@ public class Logic {
 	
 	public String processCommand(String input) {
 		Parser parser = new Parser(input);
-		COMMAND command = parser.getCommandType();
+		COMMAND_TYPE command = parser.getCommandType();
 		
 		switch (command) {
 		case ADD:
-			return add();
+			return add(parser);
+		case UNDO:
+			return undo();
 	}
 	
-	public String add() {
-		String name = parser.getName();
-		String tag = parser.getTag(); // may be null
-		boolean isTask = parser.getIsTask();
-		boolean flag = parser.getFlag();
-		Date startTime = parser.getStartTime(); // may be null
-		Date endTime = parser.getEndTime();
+	public String add(Parser parser) {
+		Command add = new Add(parser, this);
+		return add.execute();
+	}
+	
+	public String undo() {
 		
-		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
-		ongoingTasks.add(task);
-		return "Added successfully";
-	}	
+	}
 	
 	// UI: you will call this when user is quiting the programme
 	public String save() {
@@ -56,5 +54,39 @@ public class Logic {
 		storage.save(TYPE.FLOATING, floatingTasks);
 		storage.save(TYPE.OVERDUE, overdueTasks);
 		return "Saved successfully";
+	}
+	
+	/***********************************MUTATORS***********************************************/
+	public void setOngoingTasks(ArrayList<Task> tasks) {
+		this.ongoingTasks = tasks;
+	}
+	
+	public void setFloatingTasks(ArrayList<Task> tasks) {
+		this.floatingTasks = tasks;
+	}
+	
+	public void setCompletedTasks(ArrayList<Task> tasks) {
+		this.completedTasks = tasks;
+	}
+	
+	public void setOverdueTasks(ArrayList<Task> tasks) {
+		this.overdueTasks = tasks;
+	}
+	
+	/***********************************ACCESSORS***********************************************/
+	public ArrayList<Task> getOngoingTasks() {
+		return this.ongoingTasks;
+	}
+	
+	public ArrayList<Task> getFloatingTasks() {
+		return this.floatingTasks;
+	}
+	
+	public ArrayList<Task> getCompletedTasks() {
+		return this.completedTasks;
+	}
+	
+	public ArrayList<Task> getOverdueTasks() {
+		return this.overdueTasks;
 	}
 }

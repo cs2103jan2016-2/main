@@ -1,13 +1,13 @@
 
 public class Parser {
 	String command;
-	COMMAND commandType;
+	COMMAND_TYPE commandType;
 	
 	public Parser(String command) {
 		this.command = command;
 	}
 	
-	public COMMAND getCommandType() {
+	public COMMAND_TYPE getCommandType() {
 		return this.commandType;
 	}
 }
