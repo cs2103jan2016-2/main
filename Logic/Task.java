@@ -5,77 +5,51 @@ import java.util.*;
 	 *@Description: This class sets and returns the attributes of a task. 
 	 */
 public class Task {
-	
-	private int taskID;
-	private Date taskStartDate;
-	private Date taskEndDate;
-	private String taskTag;
-	private String taskDescription;
-	private boolean taskImportance;
-	private boolean isTask;
+	private TASK_TYPE type;
+	private TASK_STATUS status;
+	private String name;
+	private String tag;
+	private String description;
+	private boolean flag;
 	private boolean isComplete;
 	
-	protected int getTaskID() {
-		return this.taskID;
+	public Task(TASK_TYPE type, String name, String tag) {
+		this.type = type; // parser-determined
+		this.name = name; // must have
+		this.tag = tag; // may be null
+		this.isComplete = false;
+		this.flag = false;
 	}
 	
-	protected void setTaskID(int taskID) {
-		this.taskID = taskID;
+	protected boolean getFlag() {
+		return this.flag;
 	}
 	
-	protected Date getTaskStartDate() {
-		return this.taskStartDate;
+	protected void setFlag(boolean flag) {
+		this.flag = flag;
 	}
 	
-	protected void setTaskStartDate(Date taskStartDate) {
-		this.taskStartDate = taskStartDate;
+	protected String getTag() {
+		return this.tag;
 	}
 	
-	protected Date getTaskEndDate() {
-		return this.taskEndDate;
+	protected void setTag(String tag) {
+		this.tag = tag;
 	}
 	
-	protected void setTaskEndDate(Date taskEndDate) {
-		this.taskEndDate = taskEndDate;
+	protected String getDescription() {
+		return this.description;
 	}
 	
-	protected boolean getTaskImportance() {
-		return this.taskImportance;
+	protected void setTaskDescription(String description) {
+		this.description = description;
 	}
 	
-	protected void setTaskImportance(boolean taskImportance) {
-		this.taskImportance = taskImportance;
-	}
-	
-	protected String getTaskTag() {
-		return this.taskTag;
-	}
-	
-	protected void getTaskTag(String taskTag) {
-		this.taskTag = taskTag;
-	}
-	
-	protected String getTaskDescription() {
-		return this.taskDescription;
-	}
-	
-	protected void setTaskDescription(String taskDescription) {
-		this.taskDescription = taskDescription;
-	}
-	
-	protected boolean isTask() {
-		return this.isTask;
-	}
-	
-	protected void setImportanceOfTask(boolean isTask) {
-		this.isTask = isTask;
-	}
-	
-	protected boolean getIsTaskComplete() {
+	protected boolean getIsComplete() {
 		return this.isComplete;
 	}
 	
-	protected void setTaskAsComplete(boolean isComplete) {
+	protected void setIsComplete(boolean isComplete) {
 		this.isComplete = isComplete;
 	}
 }
