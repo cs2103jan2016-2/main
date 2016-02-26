@@ -21,7 +21,7 @@ public class Storage {
 		initialiseFile(FILENAME_OVERDUE_TASKS);
 	}
 
-	public ArrayList<String> read(TYPE type) {
+	public ArrayList<Task> read(TYPE type) {
 		switch (type) {
 		case ONGOING: 
 			return readFromFile(FILENAME_ONGOING_TASKS);

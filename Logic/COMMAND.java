@@ -1,4 +1,3 @@
-
 public enum COMMAND {
-
+	ADD, DELETE, EDIT, UNDO, REDO, SEARCH;
 }

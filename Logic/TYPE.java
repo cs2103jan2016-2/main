@@ -1,0 +1,4 @@
+
+public enum TYPE {
+	ONGOING, FLOATING, COMPLETED, OVERDUE, RESULT;
+}

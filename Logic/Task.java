@@ -78,5 +78,4 @@ public class Task {
 	protected void setTaskAsComplete(boolean isComplete) {
 		this.isComplete = isComplete;
 	}
-	
 }
