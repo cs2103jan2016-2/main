@@ -1,5 +1,3 @@
-package parser;
-
 import java.util.*;
 
 	/*
