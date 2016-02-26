@@ -31,7 +31,6 @@ public class Configuration extends Application
 		{
 			fileCheckCreate();
 			readToList();
-			
 		} 
 		catch(Exception e) 
 		{
@@ -50,6 +49,7 @@ public class Configuration extends Application
 			createConfigFile();
 			writeFormattedConfigFile();
 		}
+
 	}
 	/**
 	 *	write config file in a particular format:
