@@ -2,90 +2,84 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Add extends Command {
-	Parser parser;
-	Logic logic;
 	
 	// for use in logic class
-	public Add(Parser parser, Logic logic) {
-		this.parser = parser;
-		this.logic = logic;
+	public Add(Parser parser, Logic logic, COMMAND_TYPE command_type) {
+		super(parser, logic, command_type);
 	}
 
 	@Override
 	public String execute() {
-		TYPE type = parser.getType();
+		TASK_TYPE type = parser.getType();
 		switch (type) {
-		case ONGOING:
-			return addOngoingTasks();
 		case FLOATING:
 			return addFloatingTasks();
-		case OVERDUE:
-			return addOverdueTasks();
-		case COMPLETED:
-			return addCompletedTasks();
+		case DEADLINED:
+			return addDeadlinedTasks();
+		case EVENT:
+			return addEvent();
 		default:
 			return "Invalid type of task.";
 		}
 	}
 	
-	private String addOngoingTasks() {
-		String name = parser.getName(); // cannot be null
-		String tag = parser.getTag(); // may be null
-		boolean isTask = parser.getIsTask(); //default true: is a task not an event
-		boolean flag = parser.getFlag(); // default false: unflagged
-		Date startTime = parser.getStartTime(); // may be null
-		Date endTime = parser.getEndTime(); // cannot be null
-		
-		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
-		ArrayList<Task> ongoingTasks = logic.getOngoingTasks();
-		ongoingTasks.add(task);
-		logic.setOngoingTasks(ongoingTasks);
-	}
-	
 	private String addFloatingTasks() {
 		String name = parser.getName(); // cannot be null
 		String tag = parser.getTag(); // may be null
-		boolean isTask = parser.getIsTask(); //default true: is a task not an event
-		boolean flag = parser.getFlag(); // default false: unflagged
-		Date startTime = parser.getStartTime(); // may be null
-		Date endTime = parser.getEndTime(); // cannot be null
 		
-		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
+		Task task = new Task(TASK_TYPE.FLOATING, name, tag);
 		ArrayList<Task> floatingTasks = logic.getFloatingTasks();
 		floatingTasks.add(task);
-		logic.setOngoingTasks(floatingTasks);
+		logic.setFloatingTasks(floatingTasks);
+		return "Floating task \"" + name + "\" added to floatingTasks.";
 	}
 	
-	private String addOverdueTasks() {
+	private String addDeadlinedTasks() {
 		String name = parser.getName(); // cannot be null
 		String tag = parser.getTag(); // may be null
-		boolean isTask = parser.getIsTask(); //default true: is a task not an event
-		boolean flag = parser.getFlag(); // default false: unflagged
-		Date startTime = parser.getStartTime(); // may be null
-		Date endTime = parser.getEndTime(); // cannot be null
+		Date endDateTime = parser.getEndDateTime(); // cannot be null
 		
-		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
-		ArrayList<Task> overdueTasks = logic.getOverdueTasks();
-		overdueTasks.add(task);
-		logic.setOngoingTasks(overdueTasks);
+		DeadlinedTask task = new DeadlinedTask(TASK_TYPE.DEADLINED, name, tag, endDateTime);
+		
+		if (task.getIsOverdue()){
+			ArrayList<Task> overdueTasks = logic.getOverdueTasks();
+			overdueTasks.add(task);
+			logic.setOverdueTasks(overdueTasks);
+			return "Deadlined task \"" + name + "\"} added to overdueTasks.";
+		}
+		else {
+			ArrayList<Task> ongoingTasks = logic.getOngoingTasks();
+			ongoingTasks.add(task);
+			logic.setOngoingTasks(ongoingTasks);
+			return "Deadlined task \"" + name + "\" added to ongoingTasks.";
+		}
 	}
 	
-	private String addCompletedTasks() {
+	private String addEvent() {
 		String name = parser.getName(); // cannot be null
 		String tag = parser.getTag(); // may be null
-		boolean isTask = parser.getIsTask(); //default true: is a task not an event
-		boolean flag = parser.getFlag(); // default false: unflagged
-		Date startTime = parser.getStartTime(); // may be null
-		Date endTime = parser.getEndTime(); // cannot be null
+		Date startDateTime = parser.getStartDateTime();
+		Date endDateTime = parser.getEndDateTime();
 		
-		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
-		ArrayList<Task> completedTasks = logic.getCompletedTasks();
-		completedTasks.add(task);
-		logic.setOngoingTasks(completedTasks);
+		Event task = new Event(TASK_TYPE.EVENT, name, tag, startDateTime, endDateTime);
+		
+		if (task.getIsOverdue()) {
+			ArrayList<Task> overdueTasks = logic.getOverdueTasks();
+			overdueTasks.add(task);
+			logic.setOverdueTasks(overdueTasks);
+			return "Event \"" + name + "\" added to overdueTasks.";
+		}
+		else {
+			ArrayList<Task> ongoingTasks = logic.getOngoingTasks();
+			ongoingTasks.add(task);
+			logic.setOngoingTasks(ongoingTasks);
+			return "Event \"" + name + "\" added to ongoingTasks.";
+		}
 	}
 
 	@Override
 	public String undo() {
-
+		//TODO
+		return null;
 	}
 }

@@ -21,9 +21,9 @@ public class Storage {
 		initialiseFile(FILENAME_OVERDUE_TASKS);
 	}
 
-	public ArrayList<Task> read(TYPE type) {
-		switch (type) {
-		case ONGOING: 
+	public ArrayList<Task> read(TASK_STATUS task_status) {
+		switch (task_status) {
+		case ONGOING:
 			return readFromFile(FILENAME_ONGOING_TASKS);
 		case COMPLETED:
 			return readFromFile(FILENAME_COMPLETED_TASKS);
@@ -36,8 +36,8 @@ public class Storage {
 		}
 	}
 
-	public String save(TYPE type, ArrayList<Task> tasks) {
-		switch (type) {
+	public String save(TASK_STATUS task_status, ArrayList<Task> tasks) {
+		switch (task_status) {
 		case ONGOING:
 			return printToFile(FILENAME_ONGOING_TASKS, tasks);
 		case COMPLETED:
@@ -81,6 +81,8 @@ public class Storage {
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return tasks;

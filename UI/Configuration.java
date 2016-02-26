@@ -23,7 +23,7 @@ public class Configuration extends Application
 	private static final String DIALOG_TITLE = "SAVE DATABASE"; 
 	
 	private static final int PARAM_FOR_DIR = 8;	//include space
-	private static final int PARAM_FOR_NAME = 11; //includ space
+	private static final int PARAM_FOR_NAME = 11; //include space
 	
 	final static public String PARAM_CONFIG_DEFAULT_FILENAME = "Config.txt";
 	final static public String PARAM_DB_DEFAULT_FILENAME = "DODODB";
@@ -81,9 +81,7 @@ public class Configuration extends Application
 			System.out.println("dosent exist such file in that directory");
 			createDbFile();
 			updateConfig();
-		}
-		
-		
+		}		
 	}
 	private void updateConfig() throws IOException 
 	{
@@ -122,7 +120,6 @@ public class Configuration extends Application
 	private void createDbFile() 
 	{
 		openDbDialog();
-	
 		System.out.println("successfully created db file");
 	}
 	private void openDbDialog() 

@@ -16,10 +16,10 @@ public class Logic {
 	// UI: you will call this when user starts the programme
 	public Logic(String directory) {
 		storage = new Storage(directory);
-		ongoingTasks = storage.read(TYPE.ONGOING);
-		completedTasks = storage.read(TYPE.COMPLETED);
-		overdueTasks = storage.read(TYPE.OVERDUE);
-		floatingTasks = storage.read(TYPE.FLOATING);
+		ongoingTasks = storage.read(TASK_STATUS.ONGOING);
+		completedTasks = storage.read(TASK_STATUS.COMPLETED);
+		overdueTasks = storage.read(TASK_STATUS.OVERDUE);
+		floatingTasks = storage.read(TASK_STATUS.FLOATING);
 	}
 	
 	// UI: you will call this to run logic
@@ -36,23 +36,25 @@ public class Logic {
 			return add(parser);
 		case UNDO:
 			return undo();
+		}
+		return "Invalid COMMAND_TYPE.";
 	}
 	
 	public String add(Parser parser) {
-		Command add = new Add(parser, this);
+		Add add = new Add(parser, this, COMMAND_TYPE.ADD);
 		return add.execute();
 	}
 	
 	public String undo() {
-		
+		return "Undo successful";
 	}
 	
 	// UI: you will call this when user is quiting the programme
 	public String save() {
-		storage.save(TYPE.ONGOING, ongoingTasks);
-		storage.save(TYPE.COMPLETED, completedTasks);
-		storage.save(TYPE.FLOATING, floatingTasks);
-		storage.save(TYPE.OVERDUE, overdueTasks);
+		storage.save(TASK_STATUS.ONGOING, ongoingTasks);
+		storage.save(TASK_STATUS.COMPLETED, completedTasks);
+		storage.save(TASK_STATUS.FLOATING, floatingTasks);
+		storage.save(TASK_STATUS.OVERDUE, overdueTasks);
 		return "Saved successfully";
 	}
 	
