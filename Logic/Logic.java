@@ -10,10 +10,15 @@ enum COMMAND {
 }
 
 public class Logic {
-	ArrayList<Task> tasks;
+	Parser parser;
+	ArrayList<Task> ongoingTasks;
+	ArrayList<Task> completedTasks;
+	ArrayList<Task> overdueTasks;
+	ArrayList<Task> floatingTasks;
+	ArrayList<Task> results;
 	
-	public Logic() {
-		tasks = retrieveTasks();
+	public Logic(String command) {
+		parser = new Parser(command);
 	}
 	
 	public ArrayList<Task> retrieveTasks() {
@@ -21,18 +26,36 @@ public class Logic {
 		storage.getTasks();
 	}
 	
-	public void processCommand() {
-		Parser parser = new Parser(command);
+	public void run(String command) {
 		COMMAND command = parser.getCommandType();
 		
 		switch (command) {
 		case ADD:
 			add();
-		}
+			break;
+		case EDIT:
+			edit();
+			break;
+		case DELETE:
+			delete();
+			break;
+			
 	}
 	
 	public void add() {
-		Add add = new Add();
+		String name = parser.getName();
+		String tag = parser.getTag();
+		boolean isTask = parser.getIsTask();
+		boolean flag = parser.getFlag();
+		Date startTime = parser.getStartTime();
+		Date endTime = parser.getEndTime();
+		
+		Task task = new Task(name, tag, isTask, flag, startTime, endTime);
+		ongoingTasks.add(task);
+	}
+	
+	public void edit() {
+		
 	}
 	
 	
