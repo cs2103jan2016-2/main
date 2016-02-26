@@ -1,0 +1,3 @@
+public enum TASK_TYPE {
+	DEADLINED, EVENT, FLOATING
+}
