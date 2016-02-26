@@ -65,7 +65,12 @@ public class Configuration extends Application
 		{
 			System.out.println(e);
 		}
+		GUI gui = new GUI();
+		System.out.println("config : " + strDBdir + " " + strDBname);
+		gui.setDBdir(strDBdir);
+		gui.setDBname(strDBname);
 		System.out.println("proceed to gui");
+		gui.start(primaryStage);
 	}
 
 	private void checkConfigsContent() throws IOException 
