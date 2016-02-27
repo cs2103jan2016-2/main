@@ -12,9 +12,12 @@ import javafx.application.Application;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+/*
+ *@author Chiang Jia Feng
+ *@Description: Configuration (detect first entry and )
+ */
 public class Configuration extends Application 
 {
-
 	private static final String CONFIG_FIRSTLINE_DIRECTORY_UNKNOWN = "DBDIR = EMPTY";
 	private static final String CONFIG_FIRSTLINE_DIRECTORY_KNOWN = "DBDIR = %1$s";
 	private static final String CONFIG_SECONDLINE_FILENAME_UNKNOWN = "FILENAME = EMPTY";
@@ -189,6 +192,27 @@ public class Configuration extends Application
 		}
 	}
 
-	
+	/**
+	 * Accessor
+	 */	
+	public String getDbDir()
+	{
+		return strDBdir;
+	}
+	public String strDbName()
+	{
+		return strDBname;
+	}
+	/**
+	 * Mutators
+	 */	
+	public String setDbDir()
+	{
+		return strDBdir;
+	}
+	public String setDbName()
+	{
+		return strDBname;
+	}
 
 }

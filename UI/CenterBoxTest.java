@@ -25,7 +25,7 @@ import javafx.stage.WindowEvent;
  *@Description: CenterBox (Tabpane and Textfield)
  */
 
-public class CenterBox {
+public class CenterBoxTest {
 
 	
 	private final String firstTab = "All Tasks";
@@ -37,24 +37,26 @@ public class CenterBox {
 	private final double tabPaneHeight = 1000;
 	private final double titledPaneWidth = 1000; //centerBox titledPane size
 	private final double titledPaneHeight = 1000;
-	private final double dialogWidth = 500; //centerBox txtfield size
-	private final double dialogHeight = 500; //centerBox txtfield size
+	private final double TabWidth = 300; //centerBox txtfield size
+	private final double TabHeight = 300; //centerBox txtfield size
 
 	private VBox centerBox = new VBox();;
 	private TitledPane titledPane = new TitledPane();
 	private TabPane tabPane = new TabPane();
+	private ListView<String> list = new ListView<>();
 
+	private Stage dialog = new Stage();
 	private TextField mainTextField = new TextField();
 
 	private Logic logic = new Logic();
 	
-	private LeftBox leftBox;
+	private LeftBox lb;
 	private Stage primaryStage;
 
 	
-	public VBox centerBox(Stage primaryStage, LeftBox leftBox)
+	public VBox centerBox(Stage primaryStage, LeftBox lb)
 	{
-		this.leftBox = leftBox;
+		this.lb = lb;
 		this.primaryStage = primaryStage;
 		addTabpane(centerBox);
 		addMainTextfield(centerBox);
@@ -113,7 +115,7 @@ public class CenterBox {
 		            createDisappearPane(list.getSelectionModel().getSelectedItem());
 		           
 		            centerBox.setEffect(new BoxBlur());
-		            leftBox.leftBox.setEffect(new BoxBlur());
+		            lb.leftBox.setEffect(new BoxBlur());
 	            }
 	        }
 	    });
@@ -122,18 +124,17 @@ public class CenterBox {
 	private void createDisappearPane(HBox hbox) 
 	{
 	    Stage dialog = new Stage();
-	    VBox dialogVBox = new VBox();
-
 		dialog.initModality(Modality.APPLICATION_MODAL);
 	    dialog.initOwner(primaryStage);
-	    dialogVBox.getChildren().add(new Text("This is a Dialog"));
-	    Scene dialogScene = new Scene(dialogVBox, dialogWidth, dialogHeight);
+	    VBox dialogVbox = new VBox();
+	    dialogVbox.getChildren().add(new Text("This is a Dialog"));
+	    Scene dialogScene = new Scene(dialogVbox, 300, 200);
 	    dialog.setScene(dialogScene);
 	    dialog.show();
 	    dialog.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	        public void handle(WindowEvent we) {
 	        	centerBox.setEffect(null);
-	            leftBox.leftBox.setEffect(null);
+	            lb.leftBox.setEffect(null);
 	        }
 	    });  
 	}

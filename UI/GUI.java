@@ -1,57 +1,45 @@
-import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-
 import javafx.application.Application;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-
+/*
+ *@author Chiang Jia Feng
+ *@Description: GUI (intialize the root(VBox))
+ */
 public class GUI extends Application {
 	
-	private final double sceneWidth = 1640; 
+	private final double sceneWidth = 1640;  //primaryStage scene size
 	private final double sceneHeight = 750; 
-	private final double textfieldWidth = 200;
-	private final double textfieldHeight = 1500;
 	private Stage primaryStage;
+	private HBox root = new HBox(); //main root
+	private LeftBox leftBox = new LeftBox(); 
+	private CenterBox centerBox = new CenterBox();
+	private Scene scene = new Scene(root,sceneWidth,sceneHeight,Color.WHITE);	
+	private Logic logic = new Logic();
 	public String strDBdir = "";
 	public String strDBname = "";
-	HBox root = new HBox();
-	VBox leftBox = new VBox();
-	LeftBox lb = new LeftBox();;
-	CenterBox cb = new CenterBox();
-	TextField mainTextFeild=null;
-	Scene scene = new Scene(root,sceneWidth,sceneHeight,Color.WHITE);	
-	Logic logic = new Logic();
+	
 	@Override
 	public void start(Stage primaryStage) 
-	{
-		root.getChildren().add(lb.leftBox(cb));
-		root.getChildren().add(cb.centerBox(primaryStage, textfieldWidth,textfieldHeight,lb));
-		mainTextFeild = cb.getTextField();
+	{		
+		root.getChildren().add(leftBox.leftBox(primaryStage,centerBox));
+		root.getChildren().add(centerBox.centerBox(primaryStage,leftBox));
 		EscCloseForm(primaryStage);
-		initializeRoot(primaryStage);
+		initRoot(primaryStage);
 	}
-
-	public void initializeRoot(Stage primaryStage) 
+	public void initRoot(Stage primaryStage) 
 	{
 		this.primaryStage = primaryStage;
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
-
 	private void EscCloseForm(Stage primaryStage) 
 	{
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -93,9 +81,26 @@ public class GUI extends Application {
 		this.strDBdir = strDBdir;
 		
 	}
-	
-	/*	
- 	Logic logic = new Logic(commands);
-	logic.run();
-	*/
+	/**
+	 * Accessor
+	 */	
+	public String getDbDir()
+	{
+		return strDBdir;
+	}
+	public String strDbName()
+	{
+		return strDBname;
+	}
+	/**
+	 * Mutators
+	 */	
+	public String setDbDir()
+	{
+		return strDBdir;
+	}
+	public String setDbName()
+	{
+		return strDBname;
+	}
 }

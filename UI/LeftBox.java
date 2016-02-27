@@ -12,10 +12,16 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+/*
+ *@author Chiang Jia Feng
+ *@Description: LeftBox (Graph, tag categories and calendar)
+ */
 public class LeftBox {
 
-	CenterBox cb;
+	private Stage primaryStage;
+	CenterBox centerBox;
 	public VBox leftBox = new VBox();
 	DatePicker  checkInDatePicker = new DatePicker();
 	Label checkInlabel = new Label("Check-In Date:");
@@ -58,9 +64,9 @@ public class LeftBox {
 		titledPane.setContent(list);
 		leftBox.getChildren().add(list);
 	}
-	public VBox leftBox(CenterBox cb) 
+	public VBox leftBox(Stage primaryStage, CenterBox cb) 
 	{
-		this.cb = cb;
+		this.centerBox = centerBox;
 		addGraph();
 		addTagCategories();
 		addCalendar();
