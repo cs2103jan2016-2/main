@@ -539,7 +539,7 @@ public class Parser {
 		
 	}
 	
-	public TASK_TYPE getTaskType() {
+	public TASK_TYPE getType() {
 		return this.taskType;
 	}
 
